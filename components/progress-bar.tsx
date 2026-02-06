@@ -16,7 +16,7 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
           {current} / {total} 题 ({percentage}%)
         </span>
       </div>
-      <div className="h-2 bg-secondary rounded-full overflow-hidden">
+      <div className="h-2 bg-border rounded-full overflow-hidden">
         <div 
           className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
           style={{ width: `${percentage}%` }}

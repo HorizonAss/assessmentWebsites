@@ -1,8 +1,17 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import { calculateResults, getResultLevel, categoryLabels } from "@/lib/adhd-questions"
-import { AlertTriangle, Brain, Zap, Activity, RefreshCw, Info } from "lucide-react"
+import {
+  questions,
+  calculateResults,
+  getScreeningResult,
+} from "@/lib/adhd-questions"
+import {
+  AlertTriangle,
+  RefreshCw,
+  Info,
+  CheckCircle,
+  XCircle,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface ResultsDisplayProps {
@@ -12,151 +21,238 @@ interface ResultsDisplayProps {
 
 export function ResultsDisplay({ answers, onRestart }: ResultsDisplayProps) {
   const results = calculateResults(answers)
-  const resultLevel = getResultLevel(results.percentage)
-  
-  const categoryIcons = {
-    inattention: Brain,
-    hyperactivity: Activity,
-    impulsivity: Zap
-  }
+  const screening = getScreeningResult(results.partA.shadedCount)
 
   return (
     <div className="space-y-8">
-      {/* 主要结果卡片 */}
+      {/* Part A Screening Result */}
       <div className="bg-card rounded-2xl p-8 border border-border text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-4">测试结果</h2>
-        
-        <div className="relative inline-flex items-center justify-center mb-6">
-          <svg className="w-40 h-40 transform -rotate-90">
+        <p className="text-xs font-mono tracking-widest text-muted-foreground uppercase mb-4">
+          ASRS v1.1 Screening Result
+        </p>
+        <h2 className="text-3xl font-bold text-foreground mb-6">
+          {screening.level}
+        </h2>
+
+        <div className="relative inline-flex items-center justify-center mb-8">
+          <svg className="w-44 h-44 transform -rotate-90" aria-hidden="true">
             <circle
-              cx="80"
-              cy="80"
-              r="70"
+              cx="88"
+              cy="88"
+              r="76"
               stroke="currentColor"
-              strokeWidth="12"
+              strokeWidth="10"
               fill="none"
-              className="text-secondary"
+              className="text-border"
             />
             <circle
-              cx="80"
-              cy="80"
-              r="70"
+              cx="88"
+              cy="88"
+              r="76"
               stroke="currentColor"
-              strokeWidth="12"
+              strokeWidth="10"
               fill="none"
               strokeLinecap="round"
-              className={resultLevel.color}
-              strokeDasharray={`${results.percentage * 4.4} 440`}
+              className="text-foreground"
+              strokeDasharray={`${results.percentage * 4.78} 478`}
               style={{ transition: "stroke-dasharray 1s ease-out" }}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className={cn("text-4xl font-bold", resultLevel.color)}>
-              {results.percentage}%
+            <span className="text-5xl font-bold text-foreground tabular-nums">
+              {results.totalScore}
             </span>
-            <span className="text-sm text-muted-foreground">综合得分</span>
+            <span className="text-sm text-muted-foreground">
+              / {results.maxScore}
+            </span>
           </div>
         </div>
-        
-        <div className={cn("inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4", resultLevel.bgColor)}>
-          <span className={cn("font-semibold", resultLevel.color)}>{resultLevel.level}风险</span>
-        </div>
-        
+
         <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">
-          {resultLevel.description}
+          {screening.description}
         </p>
       </div>
 
-      {/* 分类得分 */}
-      <div className="grid gap-4 md:grid-cols-3">
-        {(Object.keys(results.categories) as Array<keyof typeof results.categories>).map((category) => {
-          const Icon = categoryIcons[category]
-          const categoryResult = results.categories[category]
-          
-          return (
-            <div key={category} className="bg-card rounded-xl p-6 border border-border">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-primary/20">
-                  <Icon className="w-5 h-5 text-primary" />
-                </div>
-                <h3 className="font-semibold text-foreground">
-                  {categoryLabels[category]}
-                </h3>
-              </div>
-              
-              <div className="mb-3">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-muted-foreground">得分</span>
-                  <span className="font-medium text-foreground">
-                    {categoryResult.score} / {categoryResult.max}
+      {/* Part A Detail */}
+      <div className="bg-card rounded-xl p-6 border border-border">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h3 className="font-semibold text-foreground text-lg">
+              Part A - 筛查项
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              6道核心筛查题目中落入显著区域的数量
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            {results.partA.isHighlyConsistent ? (
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground bg-foreground/5 border border-foreground/15 px-3 py-1.5 rounded-full">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                高度一致
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground bg-secondary px-3 py-1.5 rounded-full">
+                <CheckCircle className="w-3.5 h-3.5" />
+                未达阈值
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-end gap-3 mb-4">
+          {Array.from({ length: 6 }).map((_, i) => {
+            const isFilled = i < results.partA.shadedCount
+            const isThreshold = i === 3
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                <div
+                  className={`w-full rounded-md transition-all duration-500 ${
+                    isFilled ? "bg-foreground" : "bg-border"
+                  }`}
+                  style={{
+                    height: `${(i + 1) * 12 + 20}px`,
+                    transitionDelay: `${i * 100}ms`,
+                  }}
+                />
+                {isThreshold && (
+                  <span className="text-[10px] font-mono text-muted-foreground">
+                    阈值
                   </span>
-                </div>
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
-                    style={{ width: `${categoryResult.percentage}%` }}
-                  />
-                </div>
+                )}
               </div>
-              
-              <div className="text-2xl font-bold text-primary">
-                {categoryResult.percentage}%
-              </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">
+            显著标记：{results.partA.shadedCount} /{" "}
+            {results.partA.totalQuestions}
+          </span>
+          <span className="text-muted-foreground font-mono">
+            得分 {results.partA.score} / {results.partA.max}
+          </span>
+        </div>
       </div>
 
-      {/* 免责声明 */}
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-6">
+      {/* Part B Detail */}
+      <div className="bg-card rounded-xl p-6 border border-border">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h3 className="font-semibold text-foreground text-lg">
+              Part B - 补充项
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              12道补充题目提供额外症状线索
+            </p>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-muted-foreground">得分</span>
+            <span className="font-mono text-foreground">
+              {results.partB.score} / {results.partB.max}
+            </span>
+          </div>
+          <div className="h-2.5 bg-border rounded-full overflow-hidden">
+            <div
+              className="h-full bg-foreground transition-all duration-700 ease-out rounded-full"
+              style={{
+                width: `${(results.partB.score / results.partB.max) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">
+            显著标记：{results.partB.shadedCount} /{" "}
+            {results.partB.totalQuestions}
+          </span>
+          <span className="text-muted-foreground">
+            {Math.round((results.partB.score / results.partB.max) * 100)}%
+          </span>
+        </div>
+      </div>
+
+      {/* Per-question breakdown */}
+      <div className="bg-card rounded-xl p-6 border border-border">
+        <h3 className="font-semibold text-foreground text-lg mb-4">逐题详情</h3>
+        <div className="space-y-0 divide-y divide-border">
+          {questions.map((q) => {
+            const answer = answers[q.id] ?? 0
+            const isShaded = answer >= q.threshold
+            return (
+              <div key={q.id} className="flex items-center gap-4 py-3">
+                <span className="text-xs font-mono text-muted-foreground w-6 shrink-0">
+                  {q.id}.
+                </span>
+                <span className="flex-1 text-sm text-foreground/80 line-clamp-1">
+                  {q.text}
+                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm font-mono text-foreground">
+                    {answer}/4
+                  </span>
+                  {isShaded ? (
+                    <XCircle className="w-4 h-4 text-foreground/60" />
+                  ) : (
+                    <CheckCircle className="w-4 h-4 text-muted-foreground/40" />
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="border border-border rounded-xl p-6 bg-muted">
         <div className="flex gap-4">
           <div className="flex-shrink-0">
-            <AlertTriangle className="w-6 h-6 text-amber-400" />
+            <AlertTriangle className="w-5 h-5 text-muted-foreground" />
           </div>
           <div>
-            <h4 className="font-semibold text-amber-400 mb-2">重要提示</h4>
-            <p className="text-sm text-amber-200/80 leading-relaxed">
-              本测试仅为自我筛查工具，不能替代专业医学诊断。ADHD的诊断需要由具有资质的精神科医生或心理健康专家根据全面的临床评估做出。如果您对测试结果有任何疑虑，请及时寻求专业帮助。
+            <h4 className="font-semibold text-foreground mb-2">重要提示</h4>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              本量表基于 WHO
+              成人ADHD自评量表（ASRS
+              v1.1），仅为自我筛查工具，不能替代专业医学诊断。ADHD的诊断需要由具有资质的精神科医生或心理健康专家根据全面的临床评估做出。如果您对测试结果有任何疑虑，请及时寻求专业帮助。
             </p>
           </div>
         </div>
       </div>
 
-      {/* 建议 */}
+      {/* Suggestions */}
       <div className="bg-card rounded-xl p-6 border border-border">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 rounded-lg bg-primary/20">
-            <Info className="w-5 h-5 text-primary" />
-          </div>
+          <Info className="w-5 h-5 text-muted-foreground" />
           <h3 className="font-semibold text-foreground">下一步建议</h3>
         </div>
-        <ul className="space-y-3 text-muted-foreground">
+        <ul className="space-y-3 text-muted-foreground text-sm">
           <li className="flex items-start gap-2">
-            <span className="text-primary mt-1">•</span>
+            <span className="text-foreground/40 mt-0.5">--</span>
             如有需要，预约精神科医生或心理咨询师进行专业评估
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-primary mt-1">•</span>
+            <span className="text-foreground/40 mt-0.5">--</span>
             了解ADHD相关知识，关注自身注意力和行为模式
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-primary mt-1">•</span>
+            <span className="text-foreground/40 mt-0.5">--</span>
             建立规律的作息和时间管理习惯
           </li>
           <li className="flex items-start gap-2">
-            <span className="text-primary mt-1">•</span>
+            <span className="text-foreground/40 mt-0.5">--</span>
             保持良好的身心健康，适度运动和充足睡眠
           </li>
         </ul>
       </div>
 
-      {/* 重新测试按钮 */}
-      <div className="text-center">
-        <Button 
-          onClick={onRestart}
-          size="lg"
-          className="gap-2"
-        >
+      {/* Restart */}
+      <div className="text-center pb-8">
+        <Button onClick={onRestart} size="lg" className="gap-2">
           <RefreshCw className="w-4 h-4" />
           重新测试
         </Button>

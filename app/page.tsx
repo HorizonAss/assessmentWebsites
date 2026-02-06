@@ -3,7 +3,15 @@
 import { useState } from "react"
 import { ADHDTest } from "@/components/adhd-test"
 import { Button } from "@/components/ui/button"
-import { Brain, Shield, Clock, ArrowRight, CheckCircle2 } from "lucide-react"
+import {
+  Brain,
+  Shield,
+  Clock,
+  ArrowRight,
+  CheckCircle2,
+  FileText,
+} from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Home() {
   const [started, setStarted] = useState(false)
@@ -12,21 +20,25 @@ export default function Home() {
     return (
       <main className="min-h-screen bg-background">
         <div className="max-w-3xl mx-auto px-4 py-8">
-          {/* 头部 */}
+          {/* Top bar */}
+          <div className="flex justify-end mb-6">
+            <ThemeToggle />
+          </div>
+          {/* Header */}
           <header className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-sm mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border text-muted-foreground text-sm mb-4 font-mono">
               <Brain className="w-4 h-4" />
-              ADHD 自测评估
+              ASRS v1.1
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">
-              注意力缺陷多动障碍筛查
+            <h1 className="text-2xl font-bold text-foreground mb-2 text-balance">
+              成人ADHD自评量表
             </h1>
             <p className="text-muted-foreground">
               请根据您过去6个月的实际情况作答
             </p>
           </header>
-          
-          {/* 测试组件 */}
+
+          {/* Test */}
           <ADHDTest />
         </div>
       </main>
@@ -35,134 +47,144 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      {/* Hero 部分 */}
-      <div className="max-w-4xl mx-auto px-4 py-12 md:py-20">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 text-primary text-sm mb-6">
-            <Brain className="w-4 h-4" />
-            专业ADHD自测工具
+      {/* Hero */}
+      <div className="max-w-4xl mx-auto px-4 py-16 md:py-24">
+        {/* Top bar */}
+        <div className="flex justify-end mb-10">
+          <ThemeToggle />
+        </div>
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-muted-foreground text-sm mb-8 font-mono tracking-wide">
+            <FileText className="w-4 h-4" />
+            ASRS v1.1 -- WHO
           </div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-balance">
-            了解您的注意力状态
+
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 text-balance tracking-tight">
+            Adult ADHD
+            <br />
+            Self-Report Scale
           </h1>
-          
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed text-pretty">
-            通过科学设计的评估问卷，帮助您更好地了解自己是否存在注意力缺陷多动障碍（ADHD）的相关症状。
+
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed text-pretty">
+            世界卫生组织（WHO）成人ADHD自评量表，由18道基于DSM-IV-TR标准的症状检查题目组成，帮助您了解自身是否存在注意力缺陷多动障碍的相关症状。
           </p>
-          
-          <Button 
-            size="lg" 
+
+          <Button
+            size="lg"
             onClick={() => setStarted(true)}
             className="gap-2 text-base px-8 py-6"
           >
-            开始测试
+            开始评估
             <ArrowRight className="w-5 h-5" />
           </Button>
         </div>
 
-        {/* 特点卡片 */}
-        <div className="grid gap-4 md:grid-cols-3 mb-16">
+        {/* Features */}
+        <div className="grid gap-4 md:grid-cols-3 mb-20">
           <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-              <Clock className="w-6 h-6 text-primary" />
+            <div className="w-10 h-10 rounded-lg border border-border flex items-center justify-center mb-4">
+              <Clock className="w-5 h-5 text-muted-foreground" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">快速完成</h3>
-            <p className="text-sm text-muted-foreground">
-              仅需5-10分钟即可完成全部18道评估题目
+            <h3 className="font-semibold text-foreground mb-2">5 分钟完成</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              18道标准化题目，每题5个频率选项，快速作答
             </p>
           </div>
-          
+
           <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-              <Shield className="w-6 h-6 text-primary" />
+            <div className="w-10 h-10 rounded-lg border border-border flex items-center justify-center mb-4">
+              <Shield className="w-5 h-5 text-muted-foreground" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">隐私保护</h3>
-            <p className="text-sm text-muted-foreground">
-              所有数据仅存储在您的设备上，不会上传服务器
+            <h3 className="font-semibold text-foreground mb-2">完全离线</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              所有数据仅在您的浏览器中处理，不上传任何服务器
             </p>
           </div>
-          
+
           <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-4">
-              <Brain className="w-6 h-6 text-primary" />
+            <div className="w-10 h-10 rounded-lg border border-border flex items-center justify-center mb-4">
+              <Brain className="w-5 h-5 text-muted-foreground" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">科学评估</h3>
-            <p className="text-sm text-muted-foreground">
-              基于DSM-5诊断标准设计，涵盖三大核心症状维度
+            <h3 className="font-semibold text-foreground mb-2">WHO 标准</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              由 WHO 与哈佛、纽约大学精神科专家联合开发
             </p>
           </div>
         </div>
 
-        {/* 关于ADHD */}
-        <div className="bg-card rounded-2xl p-8 border border-border mb-16">
-          <h2 className="text-2xl font-bold text-foreground mb-6">什么是ADHD？</h2>
+        {/* About ASRS */}
+        <div className="bg-card rounded-2xl p-8 border border-border mb-12">
+          <h2 className="text-2xl font-bold text-foreground mb-6">
+            关于 ASRS v1.1
+          </h2>
           <p className="text-muted-foreground mb-6 leading-relaxed">
-            注意力缺陷多动障碍（ADHD）是一种常见的神经发育障碍，主要特征包括注意力难以集中、多动和冲动行为。ADHD不仅影响儿童，也会持续到成年期，对学业、工作和人际关系产生显著影响。
+            成人ADHD自评量表（ASRS
+            v1.1）是世界卫生组织与成人ADHD工作组联合开发的标准化筛查工具。量表分为两部分：Part
+            A 包含6道最具预测性的核心筛查题目，Part B
+            包含12道补充题目提供额外症状线索。
           </p>
-          
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="p-4 rounded-lg bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">注意力不集中</h4>
-              <p className="text-sm text-muted-foreground">
-                难以保持专注、容易分心、组织能力差、健忘
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="p-5 rounded-lg border border-border">
+              <h4 className="font-semibold text-foreground mb-2 font-mono text-sm tracking-wide">
+                Part A -- 筛查项
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                6道核心题目。若4项或以上的回答落入临床显著区域（深色阴影列），则症状与成人ADHD高度一致，建议进一步评估。
               </p>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">多动</h4>
-              <p className="text-sm text-muted-foreground">
-                坐立不安、无法安静、内心焦躁、停不下来
-              </p>
-            </div>
-            <div className="p-4 rounded-lg bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">冲动</h4>
-              <p className="text-sm text-muted-foreground">
-                打断他人、难以等待、仓促决定、缺乏耐心
+            <div className="p-5 rounded-lg border border-border">
+              <h4 className="font-semibold text-foreground mb-2 font-mono text-sm tracking-wide">
+                Part B -- 补充项
+              </h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                12道补充题目。不计算总分或诊断概率，但深色阴影区域的回答可作为症状进一步探查的线索。
               </p>
             </div>
           </div>
         </div>
 
-        {/* 测试说明 */}
+        {/* Instructions */}
         <div className="bg-card rounded-2xl p-8 border border-border">
-          <h2 className="text-2xl font-bold text-foreground mb-6">测试说明</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">作答说明</h2>
           <ul className="space-y-4">
             <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-foreground/40 mt-0.5 flex-shrink-0" />
               <span className="text-muted-foreground">
-                本测试共包含18道题目，涵盖注意力、多动和冲动三个维度
+                共18道题目：Part A（6题筛查项）+ Part B（12题补充项）
               </span>
             </li>
             <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-foreground/40 mt-0.5 flex-shrink-0" />
               <span className="text-muted-foreground">
-                请根据您在过去6个月中的实际表现进行评估
+                请根据您在过去6个月中的感受和行为表现进行评估
               </span>
             </li>
             <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-foreground/40 mt-0.5 flex-shrink-0" />
               <span className="text-muted-foreground">
-                每道题有4个选项：从不、偶尔、经常、总是
+                每道题有5个选项：从不 / 很少 / 有时 / 经常 / 非常频繁
               </span>
             </li>
             <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-foreground/40 mt-0.5 flex-shrink-0" />
               <span className="text-muted-foreground">
-                测试结果仅供参考，不能替代专业医学诊断
+                结果仅供参考，不能替代专业医学诊断。如有疑虑请咨询精神科医生
               </span>
             </li>
           </ul>
         </div>
       </div>
 
-      {/* 页脚 */}
+      {/* Footer */}
       <footer className="border-t border-border py-8 mt-8">
         <div className="max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
           <p className="mb-2">
-            本测试仅为自我筛查工具，不构成医学诊断依据。
+            基于 WHO Adult ADHD Self-Report Scale (ASRS-v1.1) Symptom Checklist
           </p>
-          <p>
-            如有疑虑，请咨询专业精神科医生或心理健康专家。
+          <p className="text-xs text-muted-foreground/60">
+            Developed by Lenard Adler (NYU), Ronald C. Kessler (Harvard),
+            Thomas Spencer (Harvard)
           </p>
         </div>
       </footer>
