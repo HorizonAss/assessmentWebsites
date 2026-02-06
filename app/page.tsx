@@ -59,10 +59,10 @@ export default function Home() {
             ASRS v1.1 -- WHO
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 text-balance tracking-tight">
-            Adult ADHD
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 text-balance tracking-[0.03em] border-0 leading-[4rem]">
+            ADHD
             <br />
-            Self-Report Scale
+            自评量表
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed text-pretty">
