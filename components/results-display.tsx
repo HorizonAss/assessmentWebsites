@@ -53,7 +53,13 @@ export function ResultsDisplay({ answers, onRestart }: ResultsDisplayProps) {
               strokeWidth="10"
               fill="none"
               strokeLinecap="round"
-              className="text-foreground"
+              className={
+                results.percentage >= 55
+                  ? "text-red-500"
+                  : results.percentage >= 30
+                    ? "text-foreground/60"
+                    : "text-blue-500"
+              }
               strokeDasharray={`${results.percentage * 4.78} 478`}
               style={{ transition: "stroke-dasharray 1s ease-out" }}
             />
@@ -86,12 +92,12 @@ export function ResultsDisplay({ answers, onRestart }: ResultsDisplayProps) {
           </div>
           <div className="flex items-center gap-2">
             {results.partA.isHighlyConsistent ? (
-              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground bg-foreground/5 border border-foreground/15 px-3 py-1.5 rounded-full">
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-red-600 dark:text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-1.5 rounded-full">
                 <AlertTriangle className="w-3.5 h-3.5" />
                 高度一致
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground bg-secondary px-3 py-1.5 rounded-full">
+              <span className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-full">
                 <CheckCircle className="w-3.5 h-3.5" />
                 未达阈值
               </span>
@@ -107,7 +113,11 @@ export function ResultsDisplay({ answers, onRestart }: ResultsDisplayProps) {
               <div key={i} className="flex-1 flex flex-col items-center gap-2">
                 <div
                   className={`w-full rounded-md transition-all duration-500 ${
-                    isFilled ? "bg-foreground" : "bg-border"
+                    isFilled
+                      ? results.partA.isHighlyConsistent
+                        ? "bg-red-500"
+                        : "bg-blue-500"
+                      : "bg-border"
                   }`}
                   style={{
                     height: `${(i + 1) * 12 + 20}px`,
@@ -157,7 +167,11 @@ export function ResultsDisplay({ answers, onRestart }: ResultsDisplayProps) {
           </div>
           <div className="h-2.5 bg-border rounded-full overflow-hidden">
             <div
-              className="h-full bg-foreground transition-all duration-700 ease-out rounded-full"
+              className={`h-full transition-all duration-700 ease-out rounded-full ${
+                results.partB.score / results.partB.max > 0.5
+                  ? "bg-red-400"
+                  : "bg-blue-400"
+              }`}
               style={{
                 width: `${(results.partB.score / results.partB.max) * 100}%`,
               }}
@@ -196,9 +210,9 @@ export function ResultsDisplay({ answers, onRestart }: ResultsDisplayProps) {
                     {answer}/4
                   </span>
                   {isShaded ? (
-                    <XCircle className="w-4 h-4 text-foreground/60" />
+                    <XCircle className="w-4 h-4 text-red-500/70" />
                   ) : (
-                    <CheckCircle className="w-4 h-4 text-muted-foreground/40" />
+                    <CheckCircle className="w-4 h-4 text-blue-400/50" />
                   )}
                 </div>
               </div>

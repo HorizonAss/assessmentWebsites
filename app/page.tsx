@@ -46,7 +46,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background rounded-none">
       {/* Hero */}
       <div className="max-w-4xl mx-auto px-4 py-16 md:py-24">
         {/* Top bar */}

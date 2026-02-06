@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { questions } from "@/lib/adhd-questions"
+import { useState, useCallback, useMemo } from "react"
+import { questions, pickReversedIds } from "@/lib/adhd-questions"
 import { QuestionCard } from "@/components/question-card"
 import { ProgressBar } from "@/components/progress-bar"
 import { ResultsDisplay } from "@/components/results-display"
@@ -12,6 +12,9 @@ export function ADHDTest() {
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [currentPage, setCurrentPage] = useState(0)
   const [showResults, setShowResults] = useState(false)
+
+  // Generate a stable seed once per mount → deterministic set of reversed questions
+  const reversedIds = useMemo(() => pickReversedIds(Date.now()), [])
 
   const questionsPerPage = 3
   const totalPages = Math.ceil(questions.length / questionsPerPage)
@@ -100,6 +103,7 @@ export function ADHDTest() {
             question={question}
             selectedAnswer={answers[question.id]}
             onAnswerSelect={handleAnswerSelect}
+            isReversed={reversedIds.has(question.id)}
           />
         ))}
       </div>
